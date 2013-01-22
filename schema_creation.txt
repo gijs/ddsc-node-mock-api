@@ -1,0 +1,147 @@
+--
+-- DDL
+--
+
+-- filters make up an arbitrary, nested structure
+CREATE TABLE filter(
+ filter_id serial PRIMARY KEY  -- implicit primary key constraint
+,filtername    text NOT NULL
+);
+
+-- locations represent geospatial Points (dikes in DDSC's case)
+CREATE TABLE location(
+ location_id  serial PRIMARY KEY
+,name         text NOT NULL
+,location     GEOGRAPHY(Point)
+,locationdate date NOT NULL DEFAULT now()::date
+);
+
+-- parameter represents measure/sample data (temperatures etc)
+CREATE TABLE parameter(
+ parameter_id  serial PRIMARY KEY
+,parameter     text NOT NULL
+,parametervalue		   text NOT NULL
+,parameterdate date NOT NULL DEFAULT now()::date
+);
+
+
+
+
+--
+-- JOIN TABLES
+--
+
+-- filters can have locations
+-- locations can belong to filters
+CREATE TABLE filter_location(
+ filter_id    integer references filter (filter_id) ON UPDATE CASCADE ON DELETE CASCADE
+,location_id integer references location (location_id) ON UPDATE CASCADE
+-- ,amount     numeric NOT NULL DEFAULT 1
+,CONSTRAINT filter_location_pkey PRIMARY KEY (filter_id,location_id)  -- explicit pk
+);
+
+
+-- locations can have many parameters
+-- parameters can belong to locations
+CREATE TABLE location_parameter(
+ location_id integer references location (location_id) ON UPDATE CASCADE ON DELETE CASCADE
+,parameter_id integer references parameter (parameter_id) ON UPDATE CASCADE
+,CONSTRAINT location_parameter_pkey PRIMARY KEY (location_id,parameter_id)
+);
+
+
+
+
+
+
+
+
+
+
+
+MONGODB SCHEMAS (DIDNT WORK!)
+
+// Define schemas
+var AppSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: false
+  },
+  url: {
+    type: String,
+    required: false
+  },
+  icon: {
+    type: String,
+    required: false
+  },
+  _id: {
+      type: mongoose.Schema.ObjectId
+  }
+});
+
+
+var PortalSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    url: {
+        type: String,
+        required: false
+    },
+    icon: {
+        type: String,
+        required: false
+    },
+    appScreenUrl: {
+        type: String,
+        required: false
+    },
+    description: {
+        type: String,
+        required: false
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    },
+    apps: [AppSchema],
+    _id: {
+        type: mongoose.Schema.ObjectId
+    }
+});
+
+var Portal = mongoose.model('Portal', PortalSchema);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// var timeseries = [];
+// for(i=0; i<400; i++) {
+//     var now = new Date();
+//     now.setHours(now.getHours() + i);
+//     var obj = {
+//       datetime: now.toJSON(),
+//       value: Math.floor(Math.random() * 6) + 1
+//     };
+//     timeseries.push(obj);
+// }

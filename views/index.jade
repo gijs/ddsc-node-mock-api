@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to the #{title} stub
+  p These entities are available and query-able:
+  
+  ul
+    li
+        a(href='/api/v1/filters') /api/v1/filters
+    li
+        a(href='/api/v1/locations') /api/v1/locations
+    li
+        a(href='/api/v1/parameters') /api/v1/parameters
