@@ -61,8 +61,8 @@ function(req, res){
           WHERE fl.filter_id = any ( array["+locations+"])";
   }
 
-  console.log('Parameters: ', parameters);
-  console.log('Locations: ', locations);
+  // console.log('Parameters: ', parameters);
+  // console.log('Locations: ', locations);
   
   var query = client.query(sql, function(err, result) {
     if(result) {
@@ -100,8 +100,9 @@ function(req, res){
           ON lp.location_id = l.location_id \
           WHERE lp.location_id = any ( array["+parameters+"])";
   }
-  console.log(filters);
-  console.log(parameters);
+  
+  // console.log(filters);
+  // console.log(parameters);
   
   var query = client.query(sql, function(err, result) {
     if(result) {
@@ -125,8 +126,6 @@ function(req, res){
   var filters, locations;
   var sql = "SELECT * FROM parameter";
 
-
-
   if (req.query.filters) {
     filters = req.query.filters.split(",");
   }
@@ -139,13 +138,11 @@ function(req, res){
           WHERE lp.location_id = any ( array["+locations+"])";    
   }
 
-  console.log(filters);
-  console.log(locations);
-
+  // console.log(filters);
+  // console.log(locations);
   
   var query = client.query(sql, function(err, result) {
     if(result) {
-      // var json = JSON.stringify(result.rows);
       var json = result.rows;
       console.log(json);
       res.json(json);
