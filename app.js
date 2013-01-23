@@ -58,7 +58,7 @@ function(req, res){
           FROM filter AS f \
           INNER JOIN filter_location AS fl \
           ON fl.filter_id = f.filter_id \
-          WHERE fl.filter_id = any ( array["+locations+"])";    
+          WHERE fl.filter_id = any ( array["+locations+"])";
   }
 
   console.log('Parameters: ', parameters);
@@ -123,18 +123,26 @@ function(req, res){
   // TODO: Add the join sql's
 
   var filters, locations;
+  var sql = "SELECT * FROM parameter";
+
+
 
   if (req.query.filters) {
     filters = req.query.filters.split(",");
   }
   if (req.query.locations) {
     locations = req.query.locations.split(",");
+    sql = "SELECT * \
+          FROM parameter AS p \
+          INNER JOIN location_parameter AS lp \
+          ON lp.location_id = p.parameter_id \
+          WHERE lp.location_id = any ( array["+locations+"])";    
   }
 
   console.log(filters);
   console.log(locations);
 
-  var sql = "SELECT * FROM parameter";
+  
   var query = client.query(sql, function(err, result) {
     if(result) {
       // var json = JSON.stringify(result.rows);
