@@ -54,7 +54,7 @@ function(req, res){
   }
   if (req.query.locations) {
     locations = req.query.locations.split(",");
-    sql = "SELECT * \
+    sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson \
           FROM filter AS f \
           INNER JOIN filter_location AS fl \
           ON fl.filter_id = f.filter_id \
@@ -82,7 +82,7 @@ app.get('/api/v1/locations', {},
 function(req, res){
 
   var parameters, filters;
-  var sql = "SELECT * FROM location";
+  var sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson FROM location";
 
   if (req.query.filters) {
     filters = req.query.filters.split(",");
