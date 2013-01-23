@@ -86,7 +86,7 @@ function(req, res){
 
   if (req.query.filters) {
     filters = req.query.filters.split(",");
-    sql = "SELECT * \
+    sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson \
           FROM location AS l \
           INNER JOIN filter_location AS fl \
           ON fl.location_id = l.location_id \
@@ -94,7 +94,7 @@ function(req, res){
   }
   if (req.query.parameters) {
     parameters = req.query.parameters.split(",");
-    sql = "SELECT * \
+    sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson \
           FROM location AS l \
           INNER JOIN location_parameter AS lp \
           ON lp.location_id = l.location_id \
