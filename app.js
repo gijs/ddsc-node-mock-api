@@ -10,14 +10,7 @@ var express = require('express')
   , http = require('http')
   , pg = require('pg')
   , path = require('path')
-  , moment = require('moment')
-  , mongoose = require('mongoose')
-  , MongoStore = require('connect-mongodb');
-
-var Schema = mongoose.Schema;
-var db = mongoose.connect(config.mongodb.conn_string);
-
-
+  , moment = require('moment');
 
 
 var app = express();
@@ -44,13 +37,10 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-
 var client = new pg.Client(config.pg.conString);
 client.connect();
 
-
 app.get('/', routes.index);
-
 
 // API definitions
 app.get('/api/v1/filters', {},
@@ -129,6 +119,8 @@ function(req, res){
 
 app.get('/api/v1/parameters', {},
 function(req, res){
+
+  // TODO: Add the join sql's
 
   var filters, locations;
 
