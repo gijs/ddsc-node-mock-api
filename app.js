@@ -49,6 +49,9 @@ function(req, res){
   var parameters, locations;
   var sql = "SELECT * FROM filter";
 
+
+  // TODO: This needs a little rethinking: what if both parameters and locations are GET'ed? 
+  // Better build the SQL query a bit more dynamically here:
   if (req.query.parameters) {
     parameters = req.query.parameters.split(",");
   }
@@ -61,8 +64,8 @@ function(req, res){
           WHERE fl.filter_id = any ( array["+locations+"])";
   }
 
-  // console.log('Parameters: ', parameters);
-  // console.log('Locations: ', locations);
+  console.log('Parameters: ', parameters);
+  console.log('Locations: ', locations);
   
   var query = client.query(sql, function(err, result) {
     if(result) {
@@ -95,11 +98,6 @@ function(req, res){
     console.log(error);
   });
 });
-
-
-
-
-
 
 
 
@@ -147,7 +145,7 @@ function(req, res){
 app.get('/api/v1/locations/:location_id', {},
 function(req, res){
 
-  var sql = "SELECT * FROM location WHERE location_id = " + req.params.location_id;
+  var sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson FROM location WHERE location_id = " + req.params.location_id;
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
