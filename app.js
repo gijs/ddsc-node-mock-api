@@ -42,8 +42,44 @@ client.connect();
 
 app.get('/', routes.index);
 
+
 // API definitions
-app.get('/api/v1/filters', {},
+
+
+
+
+
+
+app.get('/api/v1/timeseries', {},
+function(req, res) {
+
+  var return_json = [];
+
+  var filters_query = client.query('SELECT * FROM filter', function(err, result) {
+    if(result) {
+      return_json.push({'filters':result.rows});
+
+      var locations_query = client.query('SELECT * FROM location', function(err, result) {
+        if(result) {
+          return_json.push({'locations':result.rows});
+
+          var parameters_query = client.query('SELECT * FROM parameter', function(err, result) {
+            if(result) {
+              return_json.push({'parameters':result.rows});
+
+              return res.json(return_json);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+
+
+
+app.get('/api/v1/timeseries/filters', {},
 function(req, res){
 
   var parameters, locations;
@@ -81,7 +117,7 @@ function(req, res){
   });
 });
 
-app.get('/api/v1/filters/:filter_id', {},
+app.get('/api/v1/timeseries/filters/:filter_id', {},
 function(req, res){
 
   var sql = "SELECT * FROM filter WHERE filter_id = " + req.params.filter_id;
@@ -102,7 +138,7 @@ function(req, res){
 
 
 
-app.get('/api/v1/locations', {},
+app.get('/api/v1/timeseries/locations', {},
 function(req, res){
 
   var parameters, filters;
@@ -142,7 +178,7 @@ function(req, res){
   });
 });
 
-app.get('/api/v1/locations/:location_id', {},
+app.get('/api/v1/timeseries/locations/:location_id', {},
 function(req, res){
 
   var sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson FROM location WHERE location_id = " + req.params.location_id;
@@ -168,7 +204,7 @@ function(req, res){
 
 
 
-app.get('/api/v1/parameters', {},
+app.get('/api/v1/timeseries/parameters', {},
 function(req, res){
 
   // TODO: Add the join sql's
@@ -206,7 +242,7 @@ function(req, res){
 });
 
 
-app.get('/api/v1/parameters/:parameter_id', {},
+app.get('/api/v1/timeseries/parameters/:parameter_id', {},
 function(req, res){
 
   var sql = "SELECT * FROM parameter WHERE parameter_id = " + req.params.parameter_id;
