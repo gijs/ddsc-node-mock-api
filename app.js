@@ -78,6 +78,32 @@ function(req, res){
   });
 });
 
+app.get('/api/v1/filters/:filter_id', {},
+function(req, res){
+
+  var sql = "SELECT * FROM filter WHERE filter_id = " + req.params.filter_id;
+  var query = client.query(sql, function(err, result) {
+    if(result) {
+      var json = result.rows;
+      console.log(json);
+      res.json(json);
+    } else {
+      res.json({});
+    }
+  });
+  query.on('error', function(error) {
+    console.log(error);
+  });
+});
+
+
+
+
+
+
+
+
+
 app.get('/api/v1/locations', {},
 function(req, res){
 
@@ -100,7 +126,7 @@ function(req, res){
           ON lp.location_id = l.location_id \
           WHERE lp.location_id = any ( array["+parameters+"])";
   }
-  
+
   // console.log(filters);
   // console.log(parameters);
   
@@ -117,6 +143,32 @@ function(req, res){
     console.log(error);
   });
 });
+
+app.get('/api/v1/locations/:location_id', {},
+function(req, res){
+
+  var sql = "SELECT * FROM location WHERE location_id = " + req.params.location_id;
+  var query = client.query(sql, function(err, result) {
+    if(result) {
+      var json = result.rows;
+      console.log(json);
+      res.json(json);
+    } else {
+      res.json({});
+    }
+  });
+  query.on('error', function(error) {
+    console.log(error);
+  });
+});
+
+
+
+
+
+
+
+
 
 app.get('/api/v1/parameters', {},
 function(req, res){
@@ -141,6 +193,25 @@ function(req, res){
   // console.log(filters);
   // console.log(locations);
   
+  var query = client.query(sql, function(err, result) {
+    if(result) {
+      var json = result.rows;
+      console.log(json);
+      res.json(json);
+    } else {
+      res.json({});
+    }
+  });
+  query.on('error', function(error) {
+    console.log(error);
+  });
+});
+
+
+app.get('/api/v1/parameters/:parameter_id', {},
+function(req, res){
+
+  var sql = "SELECT * FROM parameter WHERE parameter_id = " + req.params.parameter_id;
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
