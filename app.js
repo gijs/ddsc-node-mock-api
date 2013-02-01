@@ -55,18 +55,26 @@ function(req, res) {
 
   var return_json = [];
 
-  var filters_query = client.query('SELECT * FROM filter', function(err, result) {
+  var filters_query = client.query('SELECT f.filter_id AS _id, fl.location_id, f.filtername FROM filter AS f \
+                                    INNER JOIN filter_location AS fl \
+                                    ON fl.filter_id = f.filter_id', function(err, result) {
     if(result) {
       return_json.push({'filters':result.rows});
 
-      var locations_query = client.query('SELECT * FROM location', function(err, result) {
+      var locations_query = client.query('SELECT l.location_id AS _id, l.name, l.location, l.locationdate \
+                                          FROM location AS l', function(err, result) {
         if(result) {
           return_json.push({'locations':result.rows});
 
-          var parameters_query = client.query('SELECT * FROM parameter', function(err, result) {
+          var parameters_query = client.query('SELECT p.parameter_id AS _id, lp.location_id, p.parameter, p.parametervalue, p.parameterdate \
+                                               FROM parameter AS p \
+                                               INNER JOIN location_parameter AS lp \
+                                               ON lp.parameter_id = p.parameter_id', function(err, result) {
             if(result) {
               return_json.push({'parameters':result.rows});
 
+              
+              // Finally, return the json response
               return res.json(return_json);
             }
           });
@@ -85,28 +93,25 @@ function(req, res){
   var parameters, locations;
   var sql = "SELECT * FROM filter";
 
-
-  // TODO: This needs a little rethinking: what if both parameters and locations are GET'ed? 
-  // Better build the SQL query a bit more dynamically here:
   if (req.query.parameters) {
     parameters = req.query.parameters.split(",");
   }
   if (req.query.locations) {
     locations = req.query.locations.split(",");
-    sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson \
+    sql = "SELECT DISTINCT ON(filtername) * \
           FROM filter AS f \
           INNER JOIN filter_location AS fl \
           ON fl.filter_id = f.filter_id \
           WHERE fl.filter_id = any ( array["+locations+"])";
   }
 
-  console.log('Parameters: ', parameters);
-  console.log('Locations: ', locations);
+  // console.log('Parameters: ', parameters);
+  // console.log('Locations: ', locations);
   
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
-      console.log(json);
+      // console.log(json);
       res.json(json);
     } else {
       res.json({});
@@ -124,7 +129,7 @@ function(req, res){
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
-      console.log(json);
+      // console.log(json);
       res.json(json);
     } else {
       res.json({});
@@ -146,7 +151,7 @@ function(req, res){
 
   if (req.query.filters) {
     filters = req.query.filters.split(",");
-    sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson \
+    sql = "SELECT DISTINCT ON(name) *, ST_AsGeoJSON(location) as location_geojson \
           FROM location AS l \
           INNER JOIN filter_location AS fl \
           ON fl.location_id = l.location_id \
@@ -154,7 +159,7 @@ function(req, res){
   }
   if (req.query.parameters) {
     parameters = req.query.parameters.split(",");
-    sql = "SELECT *, ST_AsGeoJSON(location) as location_geojson \
+    sql = "SELECT DISTINCT ON(name) *, ST_AsGeoJSON(location) as location_geojson \
           FROM location AS l \
           INNER JOIN location_parameter AS lp \
           ON lp.location_id = l.location_id \
@@ -167,7 +172,7 @@ function(req, res){
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
-      console.log(json);
+      // console.log(json);
       res.json(json);
     } else {
       res.json({});
@@ -185,7 +190,7 @@ function(req, res){
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
-      console.log(json);
+      // console.log(json);
       res.json(json);
     } else {
       res.json({});
@@ -230,7 +235,7 @@ function(req, res){
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
-      console.log(json);
+      // console.log(json);
       res.json(json);
     } else {
       res.json({});
@@ -249,7 +254,7 @@ function(req, res){
   var query = client.query(sql, function(err, result) {
     if(result) {
       var json = result.rows;
-      console.log(json);
+      // console.log(json);
       res.json(json);
     } else {
       res.json({});

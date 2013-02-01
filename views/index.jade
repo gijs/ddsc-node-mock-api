@@ -3,12 +3,37 @@ extends layout
 block content
   h1= title
   p Welcome to the #{title} stub
-  p These entities are available and query-able:
+  p It is read-only, since it was built in need of a quick API prototype. Only GET will work. No auth considerations whatsoever.
+  p These entities/resources are available and query-able:
   
   ul
     li
-        a(href='/api/v1/filters') /api/v1/filters
+        a(href='/api/v1/timeseries') /api/v1/timeseries
     li
-        a(href='/api/v1/locations') /api/v1/locations
+        a(href='/api/v1/timeseries/filters') /api/v1/timeseries/filters
     li
-        a(href='/api/v1/parameters') /api/v1/parameters
+        a(href='/api/v1/timeseries/filters/1') /api/v1/timeseries/filters/1        
+    li
+        a(href='/api/v1/timeseries/locations') /api/v1/timeseries/locations
+    li
+        a(href='/api/v1/timeseries/locations/2') /api/v1/timeseries/locations/2        
+    li
+        a(href='/api/v1/timeseries/parameters') /api/v1/timeseries/parameters
+    li
+        a(href='/api/v1/timeseries/parameters/3') /api/v1/timeseries/parameters/3
+
+  h2 Examples
+
+  p Query-able? What?
+  
+  p Resources can be filtered (confusing terminology, we know!) by providing comma-separated location id's as GET query params:
+
+  p Examples:
+
+  ul
+    li
+      a(href='/api/v1/timeseries/filters?locations=1,2') /api/v1/timeseries/filters?locations=1,2
+    li
+      a(href='/api/v1/timeseries/locations?filters=1') /api/v1/timeseries/locations?filters=1
+    li
+      a(href='/api/v1/timeseries/parameters?locations=1') /api/v1/timeseriesparameters?locations=1
